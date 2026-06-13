@@ -35,6 +35,8 @@ export async function registerRoutes(
 
   app.post('/api/urls', { schema: createUrlSchema }, urlController.create);
 
+  app.get('/api/urls', statsController.listAll);
+
   app.get(
     '/api/stats/:code',
     { schema: statsParamsSchema },

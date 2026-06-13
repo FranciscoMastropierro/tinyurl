@@ -8,4 +8,8 @@ export class UrlRepository {
   async findByCode(code: string): Promise<UrlDocument | null> {
     return UrlModel.findOne({ code }).lean();
   }
+
+  async findAll(): Promise<UrlDocument[]> {
+    return UrlModel.find().sort({ createdAt: -1 }).lean();
+  }
 }

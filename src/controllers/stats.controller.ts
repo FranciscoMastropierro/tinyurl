@@ -7,6 +7,11 @@ interface CodeParams {
 
 export function createStatsController(statsService: StatsService) {
   return {
+    async listAll(_request: FastifyRequest, reply: FastifyReply) {
+      const urls = await statsService.listUrlsWithStats();
+      return reply.send(urls);
+    },
+
     async getStats(
       request: FastifyRequest<{ Params: CodeParams }>,
       reply: FastifyReply,
