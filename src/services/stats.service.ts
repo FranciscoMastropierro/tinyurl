@@ -1,6 +1,7 @@
+import { env } from '../config/env.js';
 import { ClickRepository } from '../repositories/click.repository.js';
 import { UrlRepository } from '../repositories/url.repository.js';
-import type { UrlStats } from '../types/index.js';
+import type { UrlListItem, UrlStats } from '../types/index.js';
 import { NotFoundError } from '../utils/errors.js';
 
 export class StatsService {
@@ -23,5 +24,25 @@ export class StatsService {
       totalClicks,
       lastClick: lastClickDoc?.clickedAt.toISOString() ?? null,
     };
+  }
+
+  async listUrlsWithStats(): Promise<UrlListItem[]> {
+    const urls = await this.urlRepository.findAll();
+
+    return Promise.all(
+      urls.map(async (url) => {
+        const totalClicks = await this.clickRepository.countByCode(url.code);
+        const lastClickDoc = await this.clickRepository.findLastByCode(url.code);
+
+        return {
+          code: url.code,
+          originalUrl: url.originalUrl,
+          shortUrl: `${env.baseUrl}/${url.code}`,
+          createdAt: url.createdAt.toISOString(),
+          totalClicks,
+          lastClick: lastClickDoc?.clickedAt.toISOString() ?? null,
+        };
+      }),
+    );
   }
 }

@@ -15,18 +15,20 @@
         font-family: system-ui, -apple-system, Segoe UI, sans-serif;
         background: #f4f6f8;
         color: #1a1a1a;
-        display: flex;
-        align-items: center;
-        justify-content: center;
         padding: 1.5rem;
       }
 
+      .layout {
+        max-width: 960px;
+        margin: 0 auto;
+        display: grid;
+        gap: 1.25rem;
+      }
+
       .card {
-        width: 100%;
-        max-width: 520px;
         background: #fff;
         border-radius: 12px;
-        padding: 2rem;
+        padding: 1.5rem;
         box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
       }
 
@@ -35,8 +37,13 @@
         font-size: 1.75rem;
       }
 
+      h2 {
+        margin: 0 0 1rem;
+        font-size: 1.1rem;
+      }
+
       .subtitle {
-        margin: 0 0 1.5rem;
+        margin: 0 0 1.25rem;
         color: #666;
         font-size: 0.95rem;
       }
@@ -65,20 +72,22 @@
         margin-bottom: 1rem;
       }
 
-      button {
-        width: 100%;
-        margin-top: 0.5rem;
-        padding: 0.75rem 1rem;
+      button,
+      .btn-link {
+        padding: 0.55rem 0.85rem;
         border: none;
         border-radius: 8px;
         background: #0969da;
         color: #fff;
-        font-size: 1rem;
+        font-size: 0.9rem;
         font-weight: 600;
         cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
       }
 
-      button:hover {
+      button:hover,
+      .btn-link:hover {
         background: #0550ae;
       }
 
@@ -87,8 +96,28 @@
         cursor: not-allowed;
       }
 
+      button.secondary {
+        background: #eaeef2;
+        color: #1a1a1a;
+      }
+
+      button.secondary:hover {
+        background: #d0d7de;
+      }
+
+      button.danger {
+        background: #cf222e;
+      }
+
+      .btn-row {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-top: 0.75rem;
+      }
+
       .message {
-        margin-top: 1.25rem;
+        margin-top: 1rem;
         padding: 0.85rem 1rem;
         border-radius: 8px;
         font-size: 0.95rem;
@@ -104,82 +133,330 @@
         color: #cf222e;
       }
 
-      .short-url {
-        display: block;
-        margin-top: 0.5rem;
-        word-break: break-all;
-        font-weight: 600;
-      }
-
       .hint {
         margin-top: 0.35rem;
         font-size: 0.8rem;
         color: #666;
       }
+
+      .stats-panel {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+
+      .stat-box {
+        background: #f6f8fa;
+        border-radius: 10px;
+        padding: 1rem;
+      }
+
+      .stat-label {
+        font-size: 0.8rem;
+        color: #666;
+        margin-bottom: 0.35rem;
+      }
+
+      .stat-value {
+        font-size: 1.75rem;
+        font-weight: 700;
+        line-height: 1.1;
+      }
+
+      .stat-value.small {
+        font-size: 1rem;
+        font-weight: 600;
+        word-break: break-all;
+      }
+
+      .empty {
+        color: #666;
+        font-size: 0.95rem;
+        padding: 1rem 0;
+      }
+
+      .url-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        gap: 0.75rem;
+      }
+
+      .url-item {
+        border: 1px solid #d0d7de;
+        border-radius: 10px;
+        padding: 0.85rem 1rem;
+        cursor: pointer;
+      }
+
+      .url-item:hover {
+        border-color: #0969da;
+      }
+
+      .url-item.selected {
+        border-color: #0969da;
+        background: #f0f6ff;
+      }
+
+      .url-item-header {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.75rem;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .url-code {
+        font-weight: 700;
+        color: #0969da;
+      }
+
+      .url-clicks {
+        background: #eaeef2;
+        padding: 0.2rem 0.55rem;
+        border-radius: 999px;
+        font-size: 0.85rem;
+        font-weight: 600;
+      }
+
+      .url-original {
+        margin-top: 0.35rem;
+        font-size: 0.85rem;
+        color: #666;
+        word-break: break-all;
+      }
+
+      .list-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+      }
     </style>
   </head>
   <body>
-    <main class="card">
-      <h1>TinyURL</h1>
-      <p class="subtitle">Acortá una URL y probá el redirect al instante.</p>
+    <div class="layout">
+      <section class="card">
+        <h1>TinyURL</h1>
+        <p class="subtitle">Creá short links, listá las guardadas y probá el flujo de clicks.</p>
 
-      <form id="form">
-        <div class="field">
-          <label for="url">URL original</label>
-          <input
-            id="url"
-            name="url"
-            type="url"
-            required
-            placeholder="https://example.com"
-          />
+        <h2>Crear TinyURL</h2>
+        <form id="form">
+          <div class="field">
+            <label for="url">URL original</label>
+            <input
+              id="url"
+              name="url"
+              type="url"
+              required
+              placeholder="https://example.com"
+            />
+          </div>
+
+          <div class="field">
+            <label for="alias">Alias (opcional)</label>
+            <input
+              id="alias"
+              name="alias"
+              type="text"
+              placeholder="test-node"
+              minlength="3"
+              maxlength="32"
+              pattern="[a-zA-Z0-9-_]+"
+            />
+            <p class="hint">3–32 caracteres: letras, números, guión y guión bajo.</p>
+          </div>
+
+          <button type="submit" id="submit">Crear TinyURL</button>
+        </form>
+
+        <div id="form-error" hidden></div>
+      </section>
+
+      <section class="card">
+        <h2>Contador de clicks</h2>
+        <p class="subtitle" style="margin-bottom: 0.5rem">
+          Seleccioná una URL de la lista o creá una nueva.
+        </p>
+
+        <div id="stats-empty" class="empty">Ninguna URL seleccionada.</div>
+
+        <div id="stats-panel" hidden>
+          <div class="stats-panel">
+            <div class="stat-box">
+              <div class="stat-label">Código</div>
+              <div class="stat-value small" id="stat-code">—</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-label">Total clicks</div>
+              <div class="stat-value" id="stat-clicks">0</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-label">Último click</div>
+              <div class="stat-value small" id="stat-last">—</div>
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button type="button" id="simulate-btn">Simular visita (GET)</button>
+            <a class="btn-link" id="open-link" href="#" target="_blank" rel="noopener">Abrir short URL</a>
+            <button type="button" class="secondary" id="refresh-stats-btn">Actualizar stats</button>
+          </div>
+          <p class="hint">
+            "Simular visita" hace un GET a la short URL sin salir de esta página y encola un click como un redirect real.
+          </p>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="list-header">
+          <h2>URLs guardadas en MongoDB</h2>
+          <button type="button" class="secondary" id="refresh-list-btn">Actualizar lista</button>
         </div>
 
-        <div class="field">
-          <label for="alias">Alias (opcional)</label>
-          <input
-            id="alias"
-            name="alias"
-            type="text"
-            placeholder="mi-alias"
-            minlength="3"
-            maxlength="32"
-            pattern="[a-zA-Z0-9-_]+"
-          />
-          <p class="hint">3–32 caracteres: letras, números, guión y guión bajo.</p>
-        </div>
-
-        <button type="submit" id="submit">Crear TinyURL</button>
-      </form>
-
-      <div id="result" hidden></div>
-      <div id="error" hidden></div>
-    </main>
+        <div id="list-empty" class="empty">No hay URLs guardadas todavía.</div>
+        <ul id="url-list" class="url-list" hidden></ul>
+      </section>
+    </div>
 
     <script>
+      let urls = [];
+      let selectedCode = null;
+
       const form = document.getElementById('form');
       const submitBtn = document.getElementById('submit');
-      const result = document.getElementById('result');
-      const error = document.getElementById('error');
+      const formError = document.getElementById('form-error');
+      const urlList = document.getElementById('url-list');
+      const listEmpty = document.getElementById('list-empty');
+      const statsPanel = document.getElementById('stats-panel');
+      const statsEmpty = document.getElementById('stats-empty');
 
-      function showResult(html) {
-        result.hidden = false;
-        result.className = 'message success';
-        result.innerHTML = html;
-        error.hidden = true;
+      function showFormError(message) {
+        formError.hidden = false;
+        formError.className = 'message error';
+        formError.textContent = message;
       }
 
-      function showError(message) {
-        error.hidden = false;
-        error.className = 'message error';
-        error.textContent = message;
-        result.hidden = true;
+      function clearFormError() {
+        formError.hidden = true;
+      }
+
+      function formatDate(iso) {
+        if (!iso) return '—';
+        return new Date(iso).toLocaleString();
+      }
+
+      function selectUrl(code) {
+        selectedCode = code;
+        renderList();
+        renderStatsPanel();
+      }
+
+      function renderStatsPanel() {
+        const item = urls.find((url) => url.code === selectedCode);
+
+        if (!item) {
+          statsPanel.hidden = true;
+          statsEmpty.hidden = false;
+          return;
+        }
+
+        statsEmpty.hidden = true;
+        statsPanel.hidden = false;
+        document.getElementById('stat-code').textContent = item.code;
+        document.getElementById('stat-clicks').textContent = String(item.totalClicks);
+        document.getElementById('stat-last').textContent = formatDate(item.lastClick);
+        document.getElementById('open-link').href = item.shortUrl;
+      }
+
+      function renderList() {
+        if (urls.length === 0) {
+          urlList.hidden = true;
+          listEmpty.hidden = false;
+          return;
+        }
+
+        listEmpty.hidden = true;
+        urlList.hidden = false;
+        urlList.innerHTML = urls
+          .map(
+            (item) => `
+              <li class="url-item ${item.code === selectedCode ? 'selected' : ''}" data-code="${item.code}">
+                <div class="url-item-header">
+                  <span class="url-code">/${item.code}</span>
+                  <span class="url-clicks">${item.totalClicks} clicks</span>
+                </div>
+                <div class="url-original">${item.originalUrl}</div>
+              </li>
+            `,
+          )
+          .join('');
+
+        urlList.querySelectorAll('.url-item').forEach((element) => {
+          element.addEventListener('click', () => {
+            selectUrl(element.dataset.code);
+          });
+        });
+      }
+
+      async function loadUrls() {
+        const response = await fetch('/api/urls');
+        if (!response.ok) {
+          throw new Error('No se pudo cargar la lista');
+        }
+
+        urls = await response.json();
+
+        if (selectedCode && !urls.some((item) => item.code === selectedCode)) {
+          selectedCode = urls[0]?.code ?? null;
+        }
+
+        if (!selectedCode && urls.length > 0) {
+          selectedCode = urls[0].code;
+        }
+
+        renderList();
+        renderStatsPanel();
+      }
+
+      async function refreshSelectedStats() {
+        if (!selectedCode) return;
+
+        const response = await fetch(`/api/stats/${selectedCode}`);
+        if (!response.ok) return;
+
+        const stats = await response.json();
+        const index = urls.findIndex((item) => item.code === selectedCode);
+        if (index >= 0) {
+          urls[index] = { ...urls[index], ...stats };
+        }
+        renderList();
+        renderStatsPanel();
+      }
+
+      async function simulateClick() {
+        if (!selectedCode) return;
+
+        const btn = document.getElementById('simulate-btn');
+        btn.disabled = true;
+        btn.textContent = 'Simulando...';
+
+        try {
+          await fetch(`/${selectedCode}`, { redirect: 'manual' });
+          await new Promise((resolve) => setTimeout(resolve, 1500));
+          await loadUrls();
+        } finally {
+          btn.disabled = false;
+          btn.textContent = 'Simular visita (GET)';
+        }
       }
 
       form.addEventListener('submit', async (event) => {
         event.preventDefault();
-        result.hidden = true;
-        error.hidden = true;
+        clearFormError();
 
         const url = document.getElementById('url').value.trim();
         const alias = document.getElementById('alias').value.trim();
@@ -198,20 +475,27 @@
           const data = await response.json().catch(() => ({}));
 
           if (!response.ok) {
-            showError(data.message || data.error || 'Error al crear la URL');
+            showFormError(data.message || data.error || 'Error al crear la URL');
             return;
           }
 
-          showResult(
-            `Listo. Tu short URL:` +
-              `<a class="short-url" href="${data.shortUrl}" target="_blank" rel="noopener">${data.shortUrl}</a>`,
-          );
+          form.reset();
+          selectedCode = data.code;
+          await loadUrls();
         } catch {
-          showError('No se pudo conectar con el servidor');
+          showFormError('No se pudo conectar con el servidor');
         } finally {
           submitBtn.disabled = false;
           submitBtn.textContent = 'Crear TinyURL';
         }
+      });
+
+      document.getElementById('simulate-btn').addEventListener('click', simulateClick);
+      document.getElementById('refresh-stats-btn').addEventListener('click', refreshSelectedStats);
+      document.getElementById('refresh-list-btn').addEventListener('click', loadUrls);
+
+      loadUrls().catch(() => {
+        listEmpty.textContent = 'No se pudo cargar la lista. ¿Está corriendo la API?';
       });
     </script>
   </body>
