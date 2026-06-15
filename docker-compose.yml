@@ -15,12 +15,12 @@ services:
     build: .
     ports:
       - '3000:3000'
+    env_file:
+      - .env
     environment:
       PORT: 3000
-      BASE_URL: http://localhost:3000
       MONGO_URI: mongodb://mongo:27017/tinyurl
       REDIS_URL: redis://redis:6379
-      REDIS_TTL_SECONDS: 3600
     depends_on:
       - mongo
       - redis
@@ -28,12 +28,12 @@ services:
   worker:
     build: .
     command: npm run worker
+    env_file:
+      - .env
     environment:
       MONGO_URI: mongodb://mongo:27017/tinyurl
-      REDIS_URL: redis://redis:6379
     depends_on:
       - mongo
-      - redis
 
 volumes:
   mongo_data:

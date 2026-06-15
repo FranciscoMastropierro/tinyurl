@@ -1,8 +1,8 @@
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import type { FastifyInstance } from 'fastify';
-import { createStatsController } from '../controllers/stats.controller.js';
-import { createUrlController } from '../controllers/url.controller.js';
+import { StatsController } from '../controllers/stats.controller.js';
+import { UrlController } from '../controllers/url.controller.js';
 import {
   createUrlSchema,
   redirectParamsSchema,
@@ -23,8 +23,8 @@ export async function registerRoutes(
   services: AppServices,
   publicDir: string,
 ): Promise<void> {
-  const urlController = createUrlController(services.urlService);
-  const statsController = createStatsController(services.statsService);
+  const urlController = new UrlController(services.urlService);
+  const statsController = new StatsController(services.statsService);
 
   app.get('/', async (_request, reply) => {
     const html = await readFile(path.join(publicDir, 'index.html'), 'utf-8');

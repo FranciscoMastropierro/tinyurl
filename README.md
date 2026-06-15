@@ -1,6 +1,6 @@
 # TinyURL — Backend Challenge
 
-Sistema de acortamiento de URLs con Fastify, MongoDB, Redis y procesamiento asincrónico de clicks via BullMQ.
+Sistema de acortamiento de URLs con Fastify, MongoDB, Redis (caché) y Amazon SQS (cola de clicks).
 
 ## Requisitos
 
@@ -14,7 +14,7 @@ Sistema de acortamiento de URLs con Fastify, MongoDB, Redis y procesamiento asin
 | API | Fastify + TypeScript |
 | Persistencia | MongoDB + Mongoose |
 | Caché | Redis |
-| Cola | BullMQ (sobre Redis) |
+| Cola | Amazon SQS |
 
 ## Inicio rápido con Docker
 
@@ -53,6 +53,12 @@ npm install
 ```bash
 npm run dev
 npm run dev:worker
+```
+
+5. Ejecutar tests:
+
+```bash
+npm test
 ```
 
 ## Endpoints
@@ -111,11 +117,15 @@ curl http://localhost:3000/health
 | `MONGO_URI` | Connection string MongoDB | `mongodb://localhost:27017/tinyurl` |
 | `REDIS_URL` | Connection string Redis | `redis://localhost:6379` |
 | `REDIS_TTL_SECONDS` | TTL de caché en Redis | `3600` |
+| `AWS_REGION` | Región de la cola SQS | `us-east-1` |
+| `SQS_QUEUE_URL` | URL de la cola de clicks | — |
+| `AWS_ACCESS_KEY_ID` | Credencial IAM (local/DO) | — |
+| `AWS_SECRET_ACCESS_KEY` | Credencial IAM (local/DO) | — |
 
 ## Decisiones técnicas
 
 1. **Fastify** — Validación con JSON Schema, buen soporte TypeScript y bajo overhead.
-2. **BullMQ + Redis** — Reutiliza Redis ya requerido para caché; evita agregar RabbitMQ/Kafka para este scope.
+2. **Amazon SQS** — Cola managed para eventos de click; Redis se usa solo para caché de URLs.
 3. **Capas separadas** — Controllers → Services → Repositories; facilita mantenimiento y explicación en entrevista.
 4. **Flujo de resolución** — Redis → MongoDB (miss) → repoblar Redis con TTL configurable.
 5. **Clicks async** — El redirect responde 302 de inmediato; el evento se encola y un worker lo persiste en MongoDB.
@@ -130,7 +140,7 @@ src/
 ├── services/       # Lógica de negocio
 ├── repositories/   # Acceso a Mongo y Redis
 ├── models/         # Schemas Mongoose
-├── queues/         # Cola BullMQ
+├── queues/         # Producer SQS
 ├── workers/        # Consumidor de clicks
 ├── routes/         # Registro de rutas
 └── schemas/        # Validación Fastify
