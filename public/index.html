@@ -437,6 +437,20 @@
         renderStatsPanel();
       }
 
+      async function waitForStatsUpdate(code, previousCount, maxAttempts = 15) {
+        for (let attempt = 0; attempt < maxAttempts; attempt++) {
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+
+          const response = await fetch(`/api/stats/${code}`);
+          if (!response.ok) continue;
+
+          const stats = await response.json();
+          if (stats.totalClicks > previousCount) {
+            return;
+          }
+        }
+      }
+
       async function simulateClick() {
         if (!selectedCode) return;
 
@@ -444,9 +458,12 @@
         btn.disabled = true;
         btn.textContent = 'Simulando...';
 
+        const previousCount =
+          urls.find((item) => item.code === selectedCode)?.totalClicks ?? 0;
+
         try {
           await fetch(`/${selectedCode}`, { redirect: 'manual' });
-          await new Promise((resolve) => setTimeout(resolve, 1500));
+          await waitForStatsUpdate(selectedCode, previousCount);
           await loadUrls();
         } finally {
           btn.disabled = false;

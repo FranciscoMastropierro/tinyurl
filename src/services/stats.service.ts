@@ -1,7 +1,7 @@
 import { env } from '../config/env.js';
 import { ClickRepository } from '../repositories/click.repository.js';
 import { UrlRepository } from '../repositories/url.repository.js';
-import type { UrlListItem, UrlStats } from '../types/index.js';
+import type { UrlListItem, UrlStats } from '../types/domain/url.types.js';
 import { NotFoundError } from '../utils/errors.js';
 
 export class StatsService {

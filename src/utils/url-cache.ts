@@ -5,7 +5,7 @@ export function createRedisClient(): Redis {
   return new Redis(env.redisUrl, { maxRetriesPerRequest: null });
 }
 
-export class RedisRepository {
+export class UrlCache {
   constructor(private readonly client: Redis) {}
 
   private key(code: string): string {
@@ -18,10 +18,6 @@ export class RedisRepository {
 
   async set(code: string, originalUrl: string): Promise<void> {
     await this.client.set(this.key(code), originalUrl, 'EX', env.redisTtlSeconds);
-  }
-
-  getClient(): Redis {
-    return this.client;
   }
 
   async close(): Promise<void> {
